@@ -95,9 +95,9 @@ router.post('/exercise/add', function (req, res) {
 // retrieve a full exercise log of any user by getting /api/exercise/log with a parameter of userId(_id). App will return the user object with added array log and count (total exercise count)
 router.get('/exercise/log', function(req, res) {
     const userId  = req.query.userId;
-    const from    = req.query.from;
-    const to      = req.query.to;
-    const limit   = req.query.limit;
+    let from    = req.query.from;
+    let to      = req.query.to;
+    let limit   = req.query.limit;
     const query   = {};
     if (from !== undefined && isNaN(Date.parse(from)) === true) {
         res.send('From is not a valid date');
@@ -115,16 +115,16 @@ router.get('/exercise/log', function(req, res) {
             if(error) {
                  return console.log(error);
             } else {
-                // userId = user._id;
-                query.userId = user._id;
+                //userId = user._id;
+                query.userId = userId
 
                 if (from !== undefined) {
-                    from = new Date(from);
+                    from = new Date(from).toDateString();
                     query.date = { $gte: from};
                 }
 
                 if (to !== undefined) {
-                    to = new Date(to);
+                    to = new Date(to).toDateString();
                     to.setDate(to.getDate() + 1); // Add 1 day to include date
                     query.date = { $lt: to};
                 }
@@ -132,7 +132,7 @@ router.get('/exercise/log', function(req, res) {
                 if (limit !== undefined) {
                     limit = Number(limit);
                 }
-                Exercise.find({userId: userId}).select('description duration date').limit(limit).exec(function(errExercise, exercises) {
+                Exercise.find(query).select('description duration date').limit(limit).exec(function(errExercise, exercises) {
                     if (error) {
                         res.send('Error while searching for exercises, try again');
                       } else if (!user) {
