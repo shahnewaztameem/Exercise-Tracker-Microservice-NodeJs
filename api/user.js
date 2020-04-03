@@ -64,14 +64,14 @@ router.post('/exercise/add', function (req, res) {
         } else {
             if(data) {
                 // check for the valid fields
-    if(description === undefined || description === null || description === '') {
-        res.send('Path `description` is required.');
-    } else if(duration === undefined || duration === null || duration === '') {
-        res.send('Path `duration` is required.');
-    } else if(isNaN(duration)) {
-        res.send('Path `duration` is not a valid number.');
-    } 
-               Exercise.create({_id: data._id ,description: description, duration: duration, date: date}, function(error, exercise){
+                if(description === undefined || description === null || description === '') {
+                    res.send('Path `description` is required.');
+                } else if(duration === undefined || duration === null || duration === '') {
+                    res.send('Path `duration` is required.');
+                } else if(isNaN(duration)) {
+                    res.send('Path `duration` is not a valid number.');
+                } 
+               Exercise.create({userId: data._id,description: description, duration: duration, date: date}, function(error, exercise){
                    if(error) {
                        return console.log(error);
                    } else {
@@ -100,11 +100,10 @@ router.get('/exercise/log', function(req, res) {
     } else {
         User.findOne({_id: userId}, function(error, user) {
             if(error) {
-                return console.log(error);
+                // return console.log(error);
             } else {
-                Exercise.find({_id: user._id}, function(error, data) {
-                    console.log(data);
-                    res.status(201).json({_id: user._id, username: user.username, count: data.length});
+                Exercise.find({userId: userId}, function(error, data) {
+                    res.status(201).json({_id: user._id, username: user.username, count: data.length, log: data});
                 });
                 
             }
