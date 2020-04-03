@@ -47,7 +47,7 @@ router.post('/exercise/add', function (req, res) {
     var userId      = req.sanitize(req.body.userId);
     var description = req.sanitize(req.body.description);
     var duration    = req.sanitize(req.body.duration);
-    var date        = req.sanitize(req.body.date);
+    var date        = req.sanitize(req.body.date); 
     User.findOne({_id: userId}, function(error, data) {
         if(error) {
             return console.log(error);
