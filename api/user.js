@@ -94,16 +94,43 @@ router.post('/exercise/add', function (req, res) {
 
 // retrieve a full exercise log of any user by getting /api/exercise/log with a parameter of userId(_id). App will return the user object with added array log and count (total exercise count)
 router.get('/exercise/log', function(req, res) {
-    var userId = req.query.userId;
+    const userId  = req.query.userId;
+    const from    = req.query.from;
+    const to      = req.query.to;
+    const limit   = req.query.limit;
+    const query   = {};
     if(!userId) {
         res.send('unknown userId');
     } else {
         User.findOne({_id: userId}, function(error, user) {
             if(error) {
-                // return console.log(error);
+                 return console.log(error);
             } else {
-                Exercise.find({userId: userId}, function(error, data) {
-                    res.status(201).json({_id: user._id, username: user.username, count: data.length, log: data});
+                // userId = user._id;
+                query.userId = userId;
+
+                if (from !== undefined) {
+                    from = new Date(from);
+                    query.date = { $gte: from};
+                }
+
+                if (to !== undefined) {
+                    to = new Date(to);
+                    to.setDate(to.getDate() + 1); // Add 1 day to include date
+                    query.date = { $lt: to};
+                }
+
+                if (limit !== undefined) {
+                    limit = Number(limit);
+                }
+                Exercise.find({userId: userId}).select('userId description date duration ').limit(limit).exec(function(errExercise, exercises) {
+                    if (error) {
+                        res.send('Error while searching for exercises, try again');
+                      } else if (!user) {
+                        res.send('Exercises not found');
+                      } else {
+                        res.json({user, log:exercises});
+                      }
                 });
                 
             }
