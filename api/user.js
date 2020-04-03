@@ -116,7 +116,7 @@ router.get('/exercise/log', function(req, res) {
                  return console.log(error);
             } else {
                 // userId = user._id;
-                query.userId = userId;
+                query.userId = user._id;
 
                 if (from !== undefined) {
                     from = new Date(from);
