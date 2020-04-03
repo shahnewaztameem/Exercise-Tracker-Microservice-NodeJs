@@ -9,7 +9,7 @@ const api             = require('./api/user');
 
 const mongoose = require('mongoose')
 mongoose.connect(process.env.MLAB_URI || 'mongodb://localhost/exercise-track', {useNewUrlParser: true, useUnifiedTopology: true});
-
+mongoose.set('useCreateIndex', true);
 app.use(cors())
 
 app.use(bodyParser.urlencoded({extended: false}))

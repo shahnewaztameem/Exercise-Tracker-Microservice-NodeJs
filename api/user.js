@@ -123,13 +123,13 @@ router.get('/exercise/log', function(req, res) {
                 if (limit !== undefined) {
                     limit = Number(limit);
                 }
-                Exercise.find({userId: userId}).select('userId description date duration ').limit(limit).exec(function(errExercise, exercises) {
+                Exercise.find({userId: userId}).select('description duration date').limit(limit).exec(function(errExercise, exercises) {
                     if (error) {
                         res.send('Error while searching for exercises, try again');
                       } else if (!user) {
                         res.send('Exercises not found');
                       } else {
-                        res.json({user, log:exercises});
+                        res.status(201).json({_id: user._id, username: user.username, count: exercises.length, log:exercises});
                       }
                 });
                 
