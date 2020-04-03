@@ -20,7 +20,7 @@ router.post('/exercise/new-user', function (req, res) {
                     return console.log(error);
                 }
                 else {
-                    res.json({username: data.username, _id: data._id});
+                    res.status(201).json({username: data.username, _id: data._id});
                 }
             });
         }
@@ -75,7 +75,7 @@ router.post('/exercise/add', function (req, res) {
                        return console.log(error);
                    } else {
                        if(!error) {
-                            res.json({username: data.username, description: exercise.description, duration: exercise.duration, _id: data._id, date: exercise.date});
+                            res.status(201).json({username: data.username, description: exercise.description, duration: exercise.duration, _id: data._id, date: exercise.date});
                             //console.log(data.username, data._id, exercise.description, exercise.duration);
                        } else {
                            
