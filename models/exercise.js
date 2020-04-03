@@ -8,9 +8,7 @@ var exerciseSchema = new mongoose.Schema({
         type: Number,
         require: true
     },
-    date: {
-        type: Date
-    }
+    date: String,
 });
 
 module.exports = mongoose.model("Exercise", exerciseSchema);
