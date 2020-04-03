@@ -99,6 +99,15 @@ router.get('/exercise/log', function(req, res) {
     const to      = req.query.to;
     const limit   = req.query.limit;
     const query   = {};
+    if (from !== undefined && isNaN(Date.parse(from)) === true) {
+        res.send('From is not a valid date');
+      } else if (to !== undefined && isNaN(Date.parse(to)) === true) {
+        res.send('From is not a valid date');
+      } else if (limit !== undefined && isNaN(limit) === true) {
+        res.send('Limit is not a valid number');
+      } else if (limit !== undefined && Number(limit) < 1) {
+        res.send('Limit must be greater than 0');
+      }
     if(!userId) {
         res.send('unknown userId');
     } else {
