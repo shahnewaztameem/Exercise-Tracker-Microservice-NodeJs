@@ -8,7 +8,10 @@ var exerciseSchema = new mongoose.Schema({
         type: Number,
         require: true
     },
-    date: String,
+    date: {
+        type: String,
+        default: Date.now()
+    }
 });
 
 module.exports = mongoose.model("Exercise", exerciseSchema);

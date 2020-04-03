@@ -35,7 +35,7 @@ router.get('/exercise/users', function(req, res) {
             return console.log(error);
         } else {
             if(data !== null) {
-                res.json(data);
+                res.status(201).json(data);
             } else {
                 res.json({error: "No user data found"});
             }
@@ -51,26 +51,27 @@ router.post('/exercise/add', function (req, res) {
     
     if(req.body.date !== '') {
         var date  = new Date(req.sanitize(req.body.date)).toDateString();
-        console.log(date);
+        // console.log(date);
     } else {
         date = new Date().toDateString();
-        console.log(date);
+        // console.log(date);
     }
-    // check for the valid fields
-    if(description === undefined || description === null || description === '') {
-        res.send('Path `description` is required.');
-    } else if(duration === undefined || duration === null || duration === '') {
-        res.send('Path `duration` is required.');
-    } else if(isNaN(duration)) {
-        res.send('Path `duration` is not a valid number.');
-    } else {
+    
     // find user by their id and add exercises to db
     User.findOne({_id: userId}, function(error, data) {
         if(error) {
             res.json('unknown _id');
         } else {
             if(data) {
-               Exercise.create({description: description, duration: duration, date: date}, function(error, exercise){
+                // check for the valid fields
+    if(description === undefined || description === null || description === '') {
+        res.send('Path `description` is required.');
+    } else if(duration === undefined || duration === null || duration === '') {
+        res.send('Path `duration` is required.');
+    } else if(isNaN(duration)) {
+        res.send('Path `duration` is not a valid number.');
+    } 
+               Exercise.create({_id: data._id ,description: description, duration: duration, date: date}, function(error, exercise){
                    if(error) {
                        return console.log(error);
                    } else {
@@ -88,10 +89,27 @@ router.post('/exercise/add', function (req, res) {
             }
             
         }
-    })};  
+    });  
 });
 
 // retrieve a full exercise log of any user by getting /api/exercise/log with a parameter of userId(_id). App will return the user object with added array log and count (total exercise count)
-
+router.get('/exercise/log', function(req, res) {
+    var userId = req.query.userId;
+    if(!userId) {
+        res.send('unknown userId');
+    } else {
+        User.findOne({_id: userId}, function(error, user) {
+            if(error) {
+                return console.log(error);
+            } else {
+                Exercise.find({_id: user._id}, function(error, data) {
+                    console.log(data);
+                    res.status(201).json({_id: user._id, username: user.username, count: data.length});
+                });
+                
+            }
+        })
+    }
+})
 
 module.exports = router;
